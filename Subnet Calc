@@ -1,0 +1,63 @@
+#include <cstdint>
+#include <bitset>
+#include <iostream>
+
+void print_ip(std::bitset<32> x);
+std::bitset<32> get_ip();
+std::bitset<32> get_subnet();
+
+int main(){
+	std::bitset<32> x;
+	std::bitset<32> y;
+	x = get_ip();
+	std::cout << "Your IP is: ";
+	print_ip(x);
+	y = get_subnet();
+	print_ip(y);
+
+	std::cout << "\nNetwork address: ";
+	print_ip((x & y));
+	std::cout << "\nBroadcast address: ";
+	print_ip((~y) | x);
+
+	return 0;
+}
+
+std::bitset<32> get_subnet() {
+	std::bitset<32> ip;
+	int x;
+	std::cout << "enter subnet mask as int ____.____.____.____/XX : ";
+	std::cin >> x;
+	int max = 32;
+	for (int i = 0; i < x; i++)
+		ip.set(i);
+	ip <<= (max - x);
+	return ip;
+}
+
+std::bitset<32> get_ip() {
+	std::bitset<32> ip;
+	int y;
+
+	std::cout << "Enter First octet value XXXX.____.____.____ : ";
+	std::cin >> y;
+	ip |= (y <<= 24);
+	std::cout << "Enter Second octet value ____.XXXX.____.____ : ";
+	std::cin >> y;
+	ip |= (y <<= 16);
+	std::cout << "Enter Third octet value ____.____.XXXX.____ : ";
+	std::cin >> y;
+	ip |= (y <<= 8);
+	std::cout << "Enter second octet value ____.____.____.XXXX : ";
+	std::cin >> y;
+	ip |= y;
+
+	return ip;
+}
+
+void print_ip(std::bitset<32> x) {
+
+	std::cout << (x >> 24).to_ulong() << "." << ((x << 8) >> 24).to_ulong() << ".";
+	std::cout << ((x << 16) >> 24).to_ulong() << "." << ((x << 24) >> 24).to_ulong();
+	return;
+}
